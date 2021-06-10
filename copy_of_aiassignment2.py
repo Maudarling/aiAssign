@@ -13,7 +13,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 import missingno as ms
-from sklearn import model_selection, metrics  #to include metrics for evaluation # this used to be cross_validation
+from sklearn import model_selection, metrics 
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import GridSearchCV
 from sklearn.model_selection import train_test_split
@@ -35,7 +35,6 @@ df
 
 df.info()
 
-# Above we see that the blank "TotalCharges" happen when customers have 0 months tenure so we will change those values to $0.
 df[df['TotalCharges'].isna()==True] = 0
 df['OnlineBackup'].unique()
 
@@ -78,14 +77,13 @@ plt.xticks(fontsize=10)
 plt.yticks(fontsize=10)
 plt.show()
 
-# Explore how many churn data points we have.
+#churn data points we have.
 print(len(df['Churn']))
 
-# Explore how many customers in this dataset have churned. Is this dataset 50% as the team suggests is the overall customer churn rate?  
+# Explore how many customers in this dataset have churned
 df['Churn'].value_counts()
-# We see this dataset actually has less than the overall 50% churn rate of the entire company reported data (it's actually 26.54% that have churned.
 
-# This creates a bar graph of churn (Yes vs. No) so we can check how the data is balanced.
+# This creates a bar graph of churn (Yes vs. No) 
 df['Churn'].value_counts().plot(kind = 'bar', title = 'Bar Graph of Non-Churners vs Churners by Count (Churn is a 1)', color = 'blue', align = 'center')
 plt.show()
 # The dataset does not have a huge imbalance which is good news! But also we clearly see it does not have the 50% as we would have thought.
@@ -118,9 +116,6 @@ for i in ax.patches:
           size = 14)
 
 
-
-# Explore the relationship between instances of Tech Support and Churn. 
-# Stacked Bar of Tech Support and Churn.
 tech_support_churn = pd.crosstab(df['TechSupport'], df['Churn'])
 tech_support_churn.plot(kind = 'bar', stacked = True)
 plt.ylabel('Count')
@@ -128,8 +123,6 @@ plt.xlabel('Tech Support Count')
 plt.title('Churn Rate Relative to Uses of Tech Support (Churned is a 1)')
 plt.show()
 # We can see that non-churners use tech support more often than customers that end up churning.
-# So let's explore some ways to get people to use Tech Support more often so they cancel (churn) less. You can see notes for this at the bottom. 
-# Also, tech support in this data is just a Y/N. It would be useful in future to include how many tech support calls by customer so we could analyze how the number of tech support calls relates to churn.
 
 X_train, X_test, y_train, y_test = train_test_split(df.drop('Churn',axis=1), 
                                                     df['Churn'], test_size=0.30, 
@@ -138,7 +131,6 @@ X_train, X_test, y_train, y_test = train_test_split(df.drop('Churn',axis=1),
 
 
 # Churn rate relative to tenure.
-# Stacked bar of tenure and churn.
 tenure_churn = pd.crosstab(df['tenure'], df['Churn'])
 tenure_churn.plot(kind = 'bar', stacked = True)
 plt.ylabel('Count')
@@ -195,7 +187,7 @@ def get_feature_importances(alg):
     feat_imp = pd.Series(alg._Booster.get_fscore()).sort_values(ascending=False)
     print(feat_imp)
     
-    #this shows the feature importances on a bar chart
+    #feature importances on a bar chart
     feat_imp.plot(kind='bar', title='Feature Importances')
     plt.ylabel('Feature Importance Score')
 
@@ -203,8 +195,6 @@ target = 'Churn'
 IDcol = 'customerID'
 
 !pip install xgboost
-# XGBoost converts weak learners to strong learners through an ensemble method. 
-# Unlike bagging, in the classical boosting the subset creation is not random and depends upon the performance of the previous models.
 
 def XgbClass(learning_rate =0.1,n_estimators=1000,max_depth=5,min_child_weight=1,
              gamma=0,subsample=0.8,colsample_bytree=0.8):
